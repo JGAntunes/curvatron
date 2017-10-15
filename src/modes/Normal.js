@@ -14,7 +14,7 @@ var Normal = function(game) {
 
 Normal.prototype = {
 
-	preload: function () {	
+	preload: function () {
 		this.game.load.image('point', 'assets/point.png');
 		this.game.load.image('player0', 'assets/playerSingle.png');
 		this.game.load.image('trail0', 'assets/trailSingle.png');
@@ -98,7 +98,7 @@ Normal.prototype = {
 		params.leaderboardID = this.leaderboardID;
 		if (mobile && socialService && socialService.isLoggedIn()) {
 			socialService.submitScore(this.score, null, params);
-		} 
+		}
 	},
 
 	collect: function (playerSprite, powerSprite) {
@@ -106,7 +106,7 @@ Normal.prototype = {
 		if (point) {
 			this.pointsPow.push(point);
 			this.pointsPow = shuffleArray(this.pointsPow);
-			
+
 			if (point.x % 2 == 0 && point.y % 2 == 0) {
 				this.pointsObs.push(point);
 				this.pointsObs = shuffleArray(this.pointsObs);
@@ -116,7 +116,7 @@ Normal.prototype = {
 				this.player.growth += 2;
 			}
 		}
-		
+
 		var highScore = this.getHighScore();
 
 		if (powerSprite.name == 'point') {
@@ -194,7 +194,7 @@ Normal.prototype = {
 			this.shrink = powerup;
 		}
 		powerup.create();
-		
+
 		for (var i = 0; i < this.pointsObs.length; i++) {
 			if (JSON.stringify(this.pointsObs[i]) === JSON.stringify(this.lastPoint)) {
 				this.pointsObs.splice(i, 1);
@@ -231,9 +231,9 @@ Normal.prototype = {
 			obstacleTween3.start();
 			obstacleTween4.start();
 			this.game.physics.enable(obstacle, Phaser.Physics.ARCADE);
-		}, this);	
+		}, this);
 		this.obstacleGroup.add(obstacle);
-		
+
 		for (var i = 0; i < this.pointsPow.length; i++) {
 			if (JSON.stringify(this.pointsPow[i]) === JSON.stringify(points)) {
 				this.pointsPow.splice(i, 1);
@@ -246,14 +246,14 @@ Normal.prototype = {
 		if (this.shrink && this.shrink.sprite && this.shrink.sprite.animations) {
 			this.shrink.sprite.animations.paused = true;
 		}
-		
+
 	},
 
 	unPause: function() {
 		if (this.shrink && this.shrink.sprite && this.shrink.sprite.animations) {
 			this.shrink.sprite.animations.paused = false;
 		}
-		
+
 	},
 
 	render: function() {

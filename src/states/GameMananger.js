@@ -1,6 +1,7 @@
 var gameMananger = function (game) {
+	this.network = new Network()
 	this.crown = null;
-	this.gameTime = 60; //sec 
+	this.gameTime = 60; //sec
 	this.initialTime = 0;
 	this.powerTimer = null;
 	this.ui = {};
@@ -110,15 +111,15 @@ gameMananger.prototype = {
 		}
 		for(var i=0; i <= nPlayers; i++){
 			players[i] = new Player(i,
-			Math.cos((2*Math.PI/(nPlayers+1))*i - angle)*(w2-200)+w2, 
-			Math.sin((2*Math.PI/(nPlayers+1))*i - angle)*(h2-100)+h2, 
+			Math.cos((2*Math.PI/(nPlayers+1))*i - angle)*(w2-200)+w2,
+			Math.sin((2*Math.PI/(nPlayers+1))*i - angle)*(h2-100)+h2,
 			keys[i], this.mode, this.game);
 		}
 
 		if (this.mode.create) {
 			this.mode.create(this);
 		}
-		
+
 		if (this.mode.sp) {
 			this.game.stage.backgroundColor = colorHex;
 			document.body.style.background = colorHexDark;
@@ -145,7 +146,7 @@ gameMananger.prototype = {
 		ui.overlay.alpha = 0.5;
 
 		this.game.input.keyboard.addKey(Phaser.Keyboard.ESC).onDown.add(this.pause, this);
-		
+
 		if (!mute) {
 			menuMusic.volume = 1;
 		}
@@ -156,14 +157,14 @@ gameMananger.prototype = {
 			playCounter++;
 		}
 
-		if (playCounter == 4) {
-			this.loadAd();
-		}
+		// if (playCounter == 4) {
+		// 	this.loadAd();
+		// }
 
-		if (playCounter >= 5) {
-			Cocoon.Ad.showInterstitial();
-			playCounter = 0;
-		}
+		// if (playCounter >= 5) {
+		// 	Cocoon.Ad.showInterstitial();
+		// 	playCounter = 0;
+		// }
 
 	},
 
@@ -358,7 +359,7 @@ gameMananger.prototype = {
 	        ui.audioButton.input.useHandCursor=true;
 		    }
 	    	clickButton(ui.audioButton,this.muteSound, this);
-			
+
 		} else { //unpause
 			this.game.tweens.resumeAll();
 			ui.overlay.scale.set(0);
@@ -396,7 +397,7 @@ gameMananger.prototype = {
 			if (mobile) {
 				pauseSprite.input.useHandCursor=false;
 			}
-		}	
+		}
 	},
 
 	leaderboard: function () {
@@ -458,4 +459,3 @@ gameMananger.prototype = {
 	}
 
 };
-
