@@ -6,7 +6,9 @@
     <link href='style.css' rel='stylesheet' type='text/css'>
     <link rel="shortcut icon" href="favicon.ico"/>
 
+    <script src="https://unpkg.com/ipfs/dist/index.js"></script>
     <script type="text/javascript" src="js/phaser.min.js"></script>
+    <script src="https://unpkg.com/@orange-games/phaser-input@2.0.5/build/phaser-input.min.js"></script>
     <script type="text/javascript" src="js/cocoon.min.js"></script>
 
     <script type="text/javascript" src="src/states/Boot.js"></script>
@@ -32,8 +34,7 @@
     <script type="text/javascript" src="src/entities/PowerUp.js"></script>
 
     <script type="text/javascript" src="src/Common.js"></script>
-
-    <script src="https://unpkg.com/ipfs/dist/index.js"></script>
+    <script type="text/javascript" src="src/Network.js"></script>
 
 </head>
 
@@ -57,6 +58,7 @@
     var width =  Math.round(winRatio*height);
 
     var game = new Phaser.Game(width, height, Phaser.CANVAS, "");
+
     game.state.add("Boot",boot);
     game.state.add("PreloadMenu",preloadMenu);
     game.state.add("Menu",menu);

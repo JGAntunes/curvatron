@@ -7,10 +7,11 @@ var boot = function (game) {
 	firstTime = true;
 	iapDone = false;
 };
-  
+
 boot.prototype = {
 
 	preload: function () {
+		this.game.plugins.add(PhaserInput.Plugin);
 	  this.game.load.image("loading","assets/sprites/menu/loading.png");
 	},
 
@@ -25,7 +26,7 @@ boot.prototype = {
   	} else {
   		platform = "desktop";
   	}
-  	
+
     console.log(JSON.stringify(platform));
 
   	w2 = this.game.world.width/2;
@@ -110,5 +111,5 @@ boot.prototype = {
 			}
 		}
   	}
-  	
+
 };

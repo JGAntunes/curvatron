@@ -1,5 +1,14 @@
+
 var gameMananger = function (game) {
-	this.network = new Network()
+	// this.network = new Network({ handlers: {
+	// 	update:
+	// 	join: (msg) => {
+	// 		createPlayer(msg.origin)
+	// 	},
+	// 	start: () => {
+	//
+	// 	}
+	// }})
 	this.crown = null;
 	this.gameTime = 60; //sec
 	this.initialTime = 0;
@@ -19,9 +28,13 @@ gameMananger.prototype = {
 		scale = 1;
 		if (!this.mode.sp) {
 			scale = (-1/24)*this.mode.nPlayers+7/12;
+
+			// Listen for players updates
+			network.setHandler('update', (from, msg) => {
+				players[from].remoteUpdate(msg)
+			})
 		}
 
-		players = [];
 		gameOver = false;
 		muteAudio = false;
 		paused = false;
@@ -99,22 +112,14 @@ gameMananger.prototype = {
 		bmd.addToWorld();
 		bmd.smoothed = false;
 
-		var angle = 0;
-		if (mobile && this.orientation == "portrait") {
-			angle = Math.PI/2;
-		}
-
 		//Choose snake locations
 		var nPlayers = 0;
 		if (this.mode.nPlayers) {
 			nPlayers = this.mode.nPlayers;
 		}
-		for(var i=0; i <= nPlayers; i++){
-			players[i] = new Player(i,
-			Math.cos((2*Math.PI/(nPlayers+1))*i - angle)*(w2-200)+w2,
-			Math.sin((2*Math.PI/(nPlayers+1))*i - angle)*(h2-100)+h2,
-			keys[i], this.mode, this.game);
-		}
+		// for(var i=0; i <= nPlayers; i++){
+		//
+		// }
 
 		if (this.mode.create) {
 			this.mode.create(this);
@@ -133,9 +138,9 @@ gameMananger.prototype = {
 			this.createPower();
 		}
 
-		for(var i=0; i <= nPlayers; i++){
-			players[i].create();
-		}
+		// for(var i=0; i <= nPlayers; i++){
+		// 	players[i].create();
+		// }
 
 		ui.overlay = this.add.button(0, 0, 'overlay', function(){
 			if (gameOver) {
@@ -153,9 +158,9 @@ gameMananger.prototype = {
 
 
 		//Ad stuff
-		if (!iapDone) {
-			playCounter++;
-		}
+		// if (!iapDone) {
+		// 	playCounter++;
+		// }
 
 		// if (playCounter == 4) {
 		// 	this.loadAd();
@@ -192,9 +197,7 @@ gameMananger.prototype = {
 			}
 		}
 		//Update players
-		for(var i=0; i < players.length; i++){
-			players[i].update();
-		}
+		Object.keys(players).forEach((key) => players[key].update())
 	},
 
 	createPower: function () {
@@ -442,13 +445,13 @@ gameMananger.prototype = {
     this.pause();
   },
 
-  loadAd: function(){
-     Cocoon.Ad.loadInterstitial();
- 	},
-
- 	showAd: function(){
- 		Cocoon.Ad.showInterstitial();
- 	},
+  // loadAd: function(){
+  //    Cocoon.Ad.loadInterstitial();
+ // 	},
+	//
+ // 	showAd: function(){
+ // 		Cocoon.Ad.showInterstitial();
+ // 	},
 
 	/*render: function(){
 		players[0].render();
