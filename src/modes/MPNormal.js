@@ -9,6 +9,7 @@ var MPNormal = function(nPlayers, game) {
 MPNormal.prototype = {
 
 	preload: function () {
+		console.log('NPLAYERS', this.nPlayers)
 		this.game.load.image('point', 'assets/pointMP.png');
 		this.game.load.image('tie', 'assets/sprites/menu/tie.png');
 		this.game.load.image('crown', 'assets/crown.png');
@@ -50,13 +51,12 @@ MPNormal.prototype = {
 
 		var numberAlive = 0;
 		var playerAlive = -1;
-		for (var i = 0; i < players.length; i++) {
-			if (!players[i].dead) {
-				playerAlive = i;
+		Object.keys(players).forEach((remoteId) => {
+			if (!players[remoteId].dead) {
+				playerAlive = remoteId;
 				numberAlive++;
-				if (numberAlive > 1) break;
 			}
-		}
+		})
 		if(numberAlive < 2) {
 			this.lastCrowned = playerAlive;
 			this.manager.endGame();
@@ -70,37 +70,37 @@ MPNormal.prototype = {
 	collect: function (playerSprite, powerSprite, player) {
 		player.growth = 60*powerSprite.scale.x;
 		player.size += player.growth;
-		
+
 		if (player.size > this.highScore) {
 			this.highScore = player.size;
 			if(this.crowned > -1){
 				players[this.crowned].removeCrown();
 			}
 			this.lastCrowned = this.crowned;
-			this.crowned = player.id;
-			
+			this.crowned = player.remoteId;
+
 		}
 
 	},
 
 	kill: function () {
 		var alreadyDead = 0;
-		for (var i = 0; i < players.length; i++) {
-			if (players[i].dead) {
+		Object.keys(players).forEach((remoteId) => {
+			if (players[remoteId].dead) {
 				alreadyDead++;
 			}
-		}
+		})
 
 		var newMax = 0;
-		for (var i = 0; i < players.length; i++) {
-			if (players.length - alreadyDead == 1 && i != this.id && !players[i].dead) {
-				newMax = players[i].size;
-				this.crowned = i;
-			} else if (i != this.id && players[i].size > newMax && !players[i].dead) {
-				newMax = players[i].size;
-				this.crowned = i;
+		Object.keys(players).forEach((remoteId) => {
+			if (Object.keys(players).length - alreadyDead == 1 && remoteId != this.id && !players[remoteId].dead) {
+				newMax = players[remoteId].size;
+				this.crowned = remoteId;
+			} else if (remoteId != this.id && players[remoteId].size > newMax && !players[remoteId].dead) {
+				newMax = players[remoteId].size;
+				this.crowned = remoteId;
 			}
-		}
+		})
 
 		if (this.crowned != -1 && players[this.crowned].dead) {
 			this.crowned = -1;
@@ -123,7 +123,7 @@ MPNormal.prototype = {
 		winnerLabel.anchor.setTo(0.5,0.5);
 		var textWinner = this.game.add.text(w2+50, h2+105, String.fromCharCode(players[this.crowned].key), {
 	      font: "100px dosis",
-	      fill: colorPlayers[this.crowned],
+	      fill: colorPlayers[players[this.crowned].id],
 	      align: "center"
     	});
     	textWinner.anchor.setTo(0.5,0.5);
@@ -136,6 +136,6 @@ MPNormal.prototype = {
 
 	setHighScore: function (score) {
 		this.highScore = score;
-	}, 
+	},
 
 };

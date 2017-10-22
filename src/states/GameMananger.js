@@ -29,6 +29,8 @@ gameMananger.prototype = {
 		if (!this.mode.sp) {
 			scale = (-1/24)*this.mode.nPlayers+7/12;
 
+			Object.values(players).forEach((player) => player.create())
+
 			// Listen for players updates
 			network.setHandler('update', (from, msg) => {
 				players[from].remoteUpdate(msg)

@@ -7,7 +7,8 @@ var Player = function (id, remoteId, x, y, key, mode, game, { actionable } = {})
 	// New multiplayer stuff
 	this.remoteId = remoteId;
 	this.isReady = false
-	this.actionable = Boolean(actionable) ? actionable : true
+	// debugger
+	this.actionable = typeof actionable === 'boolean' ? actionable : true
 	//----
 
 	this.id = id;
@@ -37,10 +38,11 @@ var Player = function (id, remoteId, x, y, key, mode, game, { actionable } = {})
 	this.collectSemaphore = 0;
 };
 
-Player.findById = (id) => players.find((key) => players[key].id === parseInt(player.name))
+Player.findById = (id) => Object.keys(players).find((key) => players[key].id === id)
 
 Player.prototype = {
 	create: function () {
+		// debugger
 		this.orientation = Math.abs(window.orientation) - 90 == 0 ? "landscape" : "portrait";
 		this.sprite = this.game.add.sprite(this.x, this.y, 'player' + this.id);
 		this.sprite.name = "" + this.id;
@@ -67,6 +69,7 @@ Player.prototype = {
 
 		this.sprite.body.angularVelocity = this.direction*200*this.angularVelocity*this.speed*scale;
 
+		// debugger
 		if (!this.actionable) return
 
 		// Control stuff
@@ -141,15 +144,15 @@ Player.prototype = {
 				//collision detection
 				if (!this.mode.noCollisions) {
 					var collSize = 12*scale;
-					for (var i = 0; i < Object.keys(players).length; i++) {
+					Object.values(players).forEach((player) => {
 						for (var j = 0; j < this.trailArray.length; j++) {
-							var curTrail = Player.findById(i).trailArray[j];
+							var curTrail = player.trailArray[j];
 							if (curTrail && curTrail.x-collSize < xx && curTrail.x+collSize > xx &&
 								 	curTrail.y-collSize < yy && curTrail.y+collSize > yy) {
 								 	this.kill();
 							}
 						}
-					}
+					})
 				}
 
 			}
@@ -160,11 +163,11 @@ Player.prototype = {
 				}
 			}
 
-			for (var i = 0; i < Object.keys(players).length; i++) {
-				if (i != this.id) {
-					this.game.physics.arcade.overlap(this.sprite, Player.findById(i).sprite, this.kill, null, this);
+			Object.values(players).forEach((player) => {
+				if (player.id != this.id) {
+					this.game.physics.arcade.overlap(this.sprite, player.sprite, this.kill, null, this);
 				}
-			}
+			})
 
 			var trailPiece = null;
 			var ctx = bmd.context;

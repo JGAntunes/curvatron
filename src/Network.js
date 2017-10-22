@@ -58,7 +58,7 @@ class Network {
   }
 
   setHandler(event, func, options = {}) {
-    debugger
+    // debugger
     this.handlers[event] = {}
     this.handlers[event].func = func
     this.handlers[event].opts = options
@@ -70,7 +70,7 @@ class Network {
     const data = JSON.parse(msg.data.toString('utf8'))
     const op = data.op
     console.log('MSG', msg)
-    debugger
+    // debugger
     // No handler set
     if (!this.handlers[op] || !this.handlers[op].func) return
     this.handlers[op].func(origin, data)

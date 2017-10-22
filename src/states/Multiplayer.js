@@ -3,6 +3,7 @@ var multiplayer = function (game) {
 	this.ui = {};
 	this.maxPlayers = 7;
 	this.nPlayers = 1;
+	this.mode = new MPNormal(this.nPlayers, game)
 };
 
 multiplayer.prototype = {
@@ -40,7 +41,7 @@ multiplayer.prototype = {
 		ui.playButton = this.game.add.button(0,0,"resume_button");
 		ui.playButton.anchor.setTo(0.5,0.5);
 		ui.playButton.input.useHandCursor = true;
-		clickButton(ui.playButton, this.playTheGame, this);
+		clickButton(ui.playButton, this.advance, this);
 
 		//Join Button
 		ui.joinButton = this.game.add.button(0,0,"endless_button");
@@ -102,14 +103,27 @@ multiplayer.prototype = {
 			players[currPlayer.remoteId] = this.createPlayer(currPlayer.remoteId, {actionable: true})
 			me = players[currPlayer.remoteId]
 		}, { once: true })
+		// Set the handlers first
+		// FIXME race conditions
+		network.setHandler('start', (from, data) => {
+			// debugger
+			players[from].isReady = true
+			this.checkIfReady()
+		})
+		///
 		network.join(gameId)
+		network.setHandler('join', (from, data) => {
+			players[from] = this.createPlayer(from, {actionable: false})
+			this.nPlayers++;
+			network.listUpdate(players)
+		})
 	},
 
 	createRoom: function () {
 		// Set the correct text
 		this.ui.code.setText(network.create())
 		// Create me
-		players[network.peerId] =  this.createPlayer(network.peerId)
+		players[network.peerId] =  this.createPlayer(network.peerId, {actionable: true})
 		me = players[network.peerId]
 		network.setHandler('join', (from, data) => {
 			players[from] = this.createPlayer(from, {actionable: false})
@@ -117,20 +131,28 @@ multiplayer.prototype = {
 			network.listUpdate(players)
 		})
 		network.setHandler('start', (from, data) => {
+			// debugger
 			players[from].isReady = true
-			checkIfReady()
+			this.checkIfReady()
 		})
 	},
 
 	checkIfReady: function () {
-		const allReady = Object.keys(players).reduce((accumulator, key) => accumulator && players[key].isReady)
-		if (allReady) playTheGame()
+		// debugger
+		const allReady = Object.keys(players).reduce((accumulator, key) => accumulator && players[key].isReady, true)
+		if (allReady) this.play()
 	},
 
-	playTheGame: function () {
-		me.isReady = true
+	play: function () {
+		// FIXME
+		this.mode.nPlayers = this.nPlayers
+    this.game.state.start('PreloadGame', true, false, this.mode)
+	},
+
+	advance: function () {
+		// me.isReady = true
 		network.start()
-		checkIfReady()
+		this.checkIfReady()
 	},
 
 	backPressed:function () {
