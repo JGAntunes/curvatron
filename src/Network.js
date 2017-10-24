@@ -28,7 +28,8 @@ class Network {
          ],
          Addresses: {
             Swarm: [
-              '/dns4/signal.local.jgantunes.com/ws/p2p-webrtc-star'
+              "/dns4/star-signal.cloud.ipfs.team/wss/p2p-webrtc-star"
+              // '/dns4/signal.local.jgantunes.com/ws/p2p-webrtc-star'
             ]
           }
       },

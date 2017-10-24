@@ -91,10 +91,10 @@ gameMananger.prototype = {
 			ui.timeCircle.pivot.y = h2;
 			ui.graphics.endFill();
 
-			if(!this.mode.sp){
-				//Generate powers
-				this.powerTimer = this.game.time.events.loop(Phaser.Timer.SECOND * 2, this.createPower, this);
-			}
+			// if(!this.mode.sp){
+			// 	//Generate powers
+			// 	this.powerTimer = this.game.time.events.loop(Phaser.Timer.SECOND * 2, this.createPower, this);
+			// }
  		}
 
 		if (mobile) {
@@ -373,9 +373,9 @@ gameMananger.prototype = {
 				this.mode.unPause();
 			}
 
-			if (!this.mode.sp) {
-				this.powerTimer = this.game.time.events.loop(Phaser.Timer.SECOND * 2, this.createPower, this);
-			}
+			// if (!this.mode.sp) {
+			// 	this.powerTimer = this.game.time.events.loop(Phaser.Timer.SECOND * 2, this.createPower, this);
+			// }
 
 			ui.overlay.inputEnabled = true;
 

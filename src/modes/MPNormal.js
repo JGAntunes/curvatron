@@ -1,7 +1,7 @@
 var MPNormal = function(nPlayers, game) {
 	this.game = game;
 	this.nPlayers = nPlayers;
-	this.spawnPowers = true;
+	this.spawnPowers = false;
 	this.highScore = 0;
 	this.gridded = true;
 };
@@ -25,7 +25,7 @@ MPNormal.prototype = {
 		this.lastCrowned = -1;
 		this.manager = manager;
 		this.highScore = 0;
-		spawnPowers = true;
+		spawnPowers = false;
 		var textSize = 15;
   	if (mobile) {
   		textSize = 30
