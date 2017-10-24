@@ -150,7 +150,7 @@ multiplayer.prototype = {
 	},
 
 	advance: function () {
-		// me.isReady = true
+		me.isReady = true
 		network.start()
 		this.checkIfReady()
 	},

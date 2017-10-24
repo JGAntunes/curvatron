@@ -66,6 +66,8 @@ class Network {
 
   msgHandler(msg) {
     const origin = msg.from
+    // msg from self
+    if (origin === this.peerId) return
     console.log(msg.data.toString('utf8'))
     const data = JSON.parse(msg.data.toString('utf8'))
     const op = data.op
@@ -117,6 +119,7 @@ class Network {
     const Buffer = this.node.types.Buffer
     const msg = new Buffer(JSON.stringify({
       op: 'update',
+      angle: status.angle,
       x: status.x,
       y: status.y,
       dead: status.dead,

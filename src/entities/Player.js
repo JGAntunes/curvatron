@@ -8,6 +8,8 @@ var Player = function (id, remoteId, x, y, key, mode, game, { actionable } = {})
 	this.remoteId = remoteId;
 	this.isReady = false
 	// debugger
+	this.created = null
+	this.updates = []
 	this.actionable = typeof actionable === 'boolean' ? actionable : true
 	//----
 
@@ -17,6 +19,7 @@ var Player = function (id, remoteId, x, y, key, mode, game, { actionable } = {})
 	this.key = key;
 	this.dead = false;
 	this.ready = false;
+	// this.speed = actionable? 1 : 0.8;
 	this.speed = 1;
 	this.angularVelocity = 1;
 	this.growth = 30;
@@ -43,6 +46,7 @@ Player.findById = (id) => Object.keys(players).find((key) => players[key].id ===
 Player.prototype = {
 	create: function () {
 		// debugger
+		this.created = Date.now()
 		this.orientation = Math.abs(window.orientation) - 90 == 0 ? "landscape" : "portrait";
 		this.sprite = this.game.add.sprite(this.x, this.y, 'player' + this.id);
 		this.sprite.name = "" + this.id;
@@ -101,13 +105,30 @@ Player.prototype = {
 	},
 
 	remoteUpdate: function (status) {
-		this.dead = status.dead
-		this.sprite.x = status.x
-		this.sprite.y = status.y
-		this.direction = status.direction
+		this.updates.push(status)
 	},
 
 	update: function () {
+		if (!this.actionable && Date.now() - this.created <= 500) return
+		// this.speed = 1
+		if (!this.actionable && this.updates.length > 0) {
+			const newPos = this.updates[0]
+			const xDiff = newPos.x - this.sprite.x
+			const yDiff = newPos.y - this.sprite.y
+			// const distance = Math.sqrt(Math.abs(Math.pow(xDiff, 2) + Math.pow(yDiff, 2)))
+			const angleDiff = Math.abs(newPos.angle - this.sprite.angle)
+			console.log(this.sprite.angle, newPos.angle, angleDiff)
+			if (angleDiff <= 18) {
+				this.updates.shift()
+				this.dead = newPos.dead
+				this.sprite.angle = newPos.angle
+				// this.sprite.x = (this.sprite.x + newPos.x) / 2
+				// this.sprite.y = (this.sprite.y + newPos.y) / 2
+				this.direction = newPos.direction
+			}
+			// if (distance <= 30) this.speed = 0.5
+			// if (distance <= 50) this.speed = 0.8
+		}
 		if (!this.paused && paused) {
 			this.paused = true;
 			this.pause();
@@ -273,9 +294,9 @@ Player.prototype = {
 				}
 			}
 		}
-
 		// Update peers
 		network.update({
+			angle: this.sprite.angle,
 			x: this.sprite.x,
       y: this.sprite.y,
 			dead: this.dead,
