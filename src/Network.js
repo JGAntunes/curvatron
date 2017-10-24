@@ -5,36 +5,35 @@ const generateTopic = (id) => {
 }
 
 class Network {
-
-  static generateId() {
-    let id = '';
-    const typedArray = new Uint32Array(4);
-    window.crypto.getRandomValues(typedArray);
+  static generateId () {
+    let id = ''
+    const typedArray = new Uint32Array(4)
+    window.crypto.getRandomValues(typedArray)
     typedArray.forEach((elem) => id += elem.toString(36))
     return id
   }
 
-  constructor(handlers) {
+  constructor (handlers) {
     const node = new Ipfs({
       init: true,
       start: true,
       config: {
-         Bootstrap: [
+        Bootstrap: [
             // "/dns4/ams-1.bootstrap.libp2p.io/tcp/443/wss/ipfs/QmSoLer265NRgSp2LA3dPaeykiS1J6DifTC88f5uVQKNAd",
             // "/dns4/sfo-3.bootstrap.libp2p.io/tcp/443/wss/ipfs/QmSoLPppuBtQSGwKDZT2M73ULpjvfd3aZ6ha4oFGL1KrGM",
             // "/dns4/sgp-1.bootstrap.libp2p.io/tcp/443/wss/ipfs/QmSoLSafTMBsPKadTEgaXctDQVcqN88CNLHXMkTNwMKPnu",
             // "/dns4/nyc-1.bootstrap.libp2p.io/tcp/443/wss/ipfs/QmSoLueR4xBeUbY9WZ9xGUUxunbKWcrNFTDAadQJmocnWm",
             // "/dns4/nyc-2.bootstrap.libp2p.io/tcp/443/wss/ipfs/QmSoLV4Bbm51jM9C4gDYZQ9Cy3U6aXMJDAbzgu2fzaDs64"
-         ],
-         Addresses: {
-            Swarm: [
-              "/dns4/star-signal.cloud.ipfs.team/wss/p2p-webrtc-star"
+        ],
+        Addresses: {
+          Swarm: [
+            '/dns4/star-signal.cloud.ipfs.team/wss/p2p-webrtc-star'
               // '/dns4/signal.local.jgantunes.com/ws/p2p-webrtc-star'
-            ]
-          }
+          ]
+        }
       },
       EXPERIMENTAL: { // enable experimental features
-        pubsub: true,
+        pubsub: true
         // dht: true // enable KadDHT, currently not interopable with go-ipfs
       }
     })
@@ -58,14 +57,14 @@ class Network {
     this.handlers = handlers || []
   }
 
-  setHandler(event, func, options = {}) {
+  setHandler (event, func, options = {}) {
     // debugger
     this.handlers[event] = {}
     this.handlers[event].func = func
     this.handlers[event].opts = options
   }
 
-  msgHandler(msg) {
+  msgHandler (msg) {
     const origin = msg.from
     // msg from self
     if (origin === this.peerId) return
@@ -80,42 +79,42 @@ class Network {
     if (this.handlers[op].opts.once) delete this.handlers[op]
   }
 
-  join(id) {
+  join (id) {
     this.gameId = id
     const Buffer = this.node.types.Buffer
-    const msg =  new Buffer(JSON.stringify({op: 'join'}))
+    const msg = new Buffer(JSON.stringify({op: 'join'}))
     console.log(generateTopic(id))
     this.node.pubsub.subscribe(generateTopic(id), this.msgHandler)
     this.node.pubsub.publish(generateTopic(this.gameId), msg)
   }
 
-  listUpdate(players) {
+  listUpdate (players) {
     const msg = {op: 'list'}
     msg.players = Object.keys(players).map((key) => ({
       remoteId: players[key].remoteId,
       id: players[key].id
     }))
     const Buffer = this.node.types.Buffer
-    const buf =  new Buffer(JSON.stringify(msg))
+    const buf = new Buffer(JSON.stringify(msg))
     this.node.pubsub.publish(generateTopic(this.gameId), buf)
   }
 
-  create() {
+  create () {
     const id = Network.generateId()
     console.log(generateTopic(id))
     this.node.pubsub.subscribe(generateTopic(id), this.msgHandler)
     this.gameId = id
-    return id;
+    return id
   }
 
-  start() {
+  start () {
     // TODO generate msg
     const Buffer = this.node.types.Buffer
-    const msg =  new Buffer(JSON.stringify({op: 'start'}))
+    const msg = new Buffer(JSON.stringify({op: 'start'}))
     this.node.pubsub.publish(generateTopic(this.gameId), msg)
   }
 
-  update(status) {
+  update (status) {
     // TODO generate msg
     const Buffer = this.node.types.Buffer
     const msg = new Buffer(JSON.stringify({

@@ -1,0 +1,25 @@
+{
+  "name": "curvatron",
+  "version": "0.1.0",
+  "description": "Like tron but curva",
+  "main": "index.js",
+  "scripts": {
+    "lint": "standard | snazzy",
+    "lint:fix": "standard --fix",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JGAntunes/curvatron.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/JGAntunes/curvatron/issues"
+  },
+  "homepage": "https://github.com/JGAntunes/curvatron#readme",
+  "devDependencies": {
+    "snazzy": "^7.0.0",
+    "standard": "^10.0.3"
+  }
+}
