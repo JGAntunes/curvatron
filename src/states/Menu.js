@@ -62,10 +62,10 @@ menu.prototype = {
     ui.beta.anchor.setTo(0.5,0.5); */
 
     // Single Player
-    ui.spButton = this.add.button(0, 0, 'singleplayer_button')
-    ui.spButton.anchor.setTo(0.5, 0.5)
-    ui.spButton.input.useHandCursor = true
-    clickButton(ui.spButton, this.singlePlayer, this)
+    // ui.spButton = this.add.button(0, 0, 'singleplayer_button')
+    // ui.spButton.anchor.setTo(0.5, 0.5)
+    // ui.spButton.input.useHandCursor = true
+    // clickButton(ui.spButton, this.singlePlayer, this)
 
     // Multiplayer
     ui.mpButton = this.add.button(0, 0, 'multiplayer_button')
@@ -74,23 +74,30 @@ menu.prototype = {
     clickButton(ui.mpButton, this.multiplayer, this)
 
     // SetKeys or leaderboards
-    if (mobile) {
-      ui.leaderboard = this.add.button(0, 0, 'leaderboard_button')
-      ui.leaderboard.anchor.setTo(0.5, 0.5)
-      ui.leaderboard.input.useHandCursor = true
-      clickButton(ui.leaderboard, this.leaderboard, this)
+    // if (mobile) {
+    //   ui.leaderboard = this.add.button(0, 0, 'leaderboard_button')
+    //   ui.leaderboard.anchor.setTo(0.5, 0.5)
+    //   ui.leaderboard.input.useHandCursor = true
+    //   clickButton(ui.leaderboard, this.leaderboard, this)
+    //
+    //   /* ui.login = this.add.button(0,0,"login_button");
+    //   ui.login.anchor.setTo(1,1);
+    //   ui.login.input.useHandCursor = true;
+    //   clickButton(ui.login, this.login, this);
+    //
+    //   ui.loginText = this.add.text(0,0, "login", {
+    //   font: "40px dosis",
+    //   fill: colorHex,
+    //   align: "center"});
+    //   ui.loginText.anchor.set(1, 1); */
+    // } else {
+    //   ui.keysButton = this.add.button(0, 0, 'setkeys_button')
+    //   ui.keysButton.anchor.setTo(0.5, 0.5)
+    //   ui.keysButton.input.useHandCursor = true
+    //   clickButton(ui.keysButton, this.setKeys, this)
+    // }
 
-      /* ui.login = this.add.button(0,0,"login_button");
-      ui.login.anchor.setTo(1,1);
-      ui.login.input.useHandCursor = true;
-      clickButton(ui.login, this.login, this);
-
-      ui.loginText = this.add.text(0,0, "login", {
-      font: "40px dosis",
-      fill: colorHex,
-      align: "center"});
-      ui.loginText.anchor.set(1, 1); */
-    } else {
+    if (!mobile) {
       ui.keysButton = this.add.button(0, 0, 'setkeys_button')
       ui.keysButton.anchor.setTo(0.5, 0.5)
       ui.keysButton.input.useHandCursor = true
@@ -98,10 +105,10 @@ menu.prototype = {
     }
 
   	// Stats
-  	ui.statsButton = this.add.button(0, 0, 'stats_button')
-    ui.statsButton.anchor.setTo(0.5, 0.5)
-    ui.statsButton.input.useHandCursor = true
-    clickButton(ui.statsButton, this.stats, this)
+  	// ui.statsButton = this.add.button(0, 0, 'stats_button')
+    // ui.statsButton.anchor.setTo(0.5, 0.5)
+    // ui.statsButton.input.useHandCursor = true
+    // clickButton(ui.statsButton, this.stats, this)
 
   	// Audio
     if (mute) {
@@ -274,12 +281,12 @@ menu.prototype = {
       ui.beta.position.set(w2+360,h2*0.3+100);
     } */
 
-    ui.spButton.position.set(w2 - 170, h2)
+    // ui.spButton.position.set(w2 - 170, h2)
 
-    ui.mpButton.position.set(w2 + 170, h2)
+    ui.mpButton.position.set(w2, h2)
 
     if (mobile) {
-      ui.leaderboard.position.set(w2 + w2 / 2, 1.6 * h2)
+      // ui.leaderboard.position.set(w2 + w2 / 2, 1.6 * h2)
 
       /* ui.login.position.set(w2*2, h2*2);
       ui.loginText.position.set(w2*2-30, h2*2);
@@ -287,14 +294,14 @@ menu.prototype = {
         ui.avatar.position.set(w2*2-160, h2*2-ui.login.height*0.5);
       } */
 
-      if (platform == 'android' && !iapDone) {
-        ui.donateButton.position.set(2 * w2, 2 * h2)
-      }
+      // if (platform == 'android' && !iapDone) {
+      //   ui.donateButton.position.set(2 * w2, 2 * h2)
+      // }
     } else {
       ui.keysButton.position.set(w2 + w2 / 2, 1.6 * h2)
     }
 
-    ui.statsButton.position.set(w2, 1.6 * h2)
+    // ui.statsButton.position.set(w2, 1.6 * h2)
 
     ui.audioButton.position.set(w2 / 2, 1.6 * h2)
   }

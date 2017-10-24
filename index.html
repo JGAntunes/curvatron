@@ -16,21 +16,12 @@
     <script type="text/javascript" src="src/states/Menu.js"></script>
     <script type="text/javascript" src="src/states/Multiplayer.js"></script>
     <script type="text/javascript" src="src/states/SetKeys.js"></script>
-    <script type="text/javascript" src="src/states/Leaderboards.js"></script>
     <script type="text/javascript" src="src/states/PreloadGame.js"></script>
-    <script type="text/javascript" src="src/states/SinglePlayer.js"></script>
     <script type="text/javascript" src="src/states/GameMananger.js"></script>
-    <script type="text/javascript" src="src/states/Stats.js"></script>
 
-    <script type="text/javascript" src="src/modes/Normal.js"></script>
-    <script type="text/javascript" src="src/modes/Endless.js"></script>
-    <script type="text/javascript" src="src/modes/Creative.js"></script>
-    <script type="text/javascript" src="src/modes/Adventure.js"></script>
-    <script type="text/javascript" src="src/modes/OldSchool.js"></script>
     <script type="text/javascript" src="src/modes/MPNormal.js"></script>
 
     <script type="text/javascript" src="src/entities/Player.js"></script>
-    <script type="text/javascript" src="src/entities/OldPlayer.js"></script>
     <script type="text/javascript" src="src/entities/PowerUp.js"></script>
 
     <script type="text/javascript" src="src/Common.js"></script>
@@ -64,9 +55,6 @@
     game.state.add("Menu",menu);
     game.state.add("Multiplayer",multiplayer);
     game.state.add("SetKeys",setKeys);
-    game.state.add("Leaderboards",leaderboards);
-    game.state.add("Stats",stats);
-    game.state.add("SinglePlayer",singlePlayer);
     game.state.add("PreloadGame",preloadGame);
     game.state.add("GameMananger",gameMananger);
     game.state.start("Boot");

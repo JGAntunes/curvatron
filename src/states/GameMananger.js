@@ -1,14 +1,5 @@
 
 var gameMananger = function (game) {
-	// this.network = new Network({ handlers: {
-	// 	update:
-	// 	join: (msg) => {
-	// 		createPlayer(msg.origin)
-	// 	},
-	// 	start: () => {
-	//
-	// 	}
-	// }})
   this.crown = null
   this.gameTime = 60 // sec
   this.initialTime = 0
