@@ -1,3 +1,5 @@
+const MPNormal = require('../modes/mpnormal')
+
 var menu = function (game) {
   maxPlayers = 7
   keys = [
@@ -307,3 +309,5 @@ menu.prototype = {
   }
 
 }
+
+module.exports = menu

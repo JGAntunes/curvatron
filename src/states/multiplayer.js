@@ -1,3 +1,5 @@
+const MPNormal = require('../modes/mpnormal')
+const Player = require('../entities/player')
 
 var multiplayer = function (game) {
   this.ui = {}
@@ -170,3 +172,5 @@ multiplayer.prototype = {
   }
 
 }
+
+module.exports = multiplayer

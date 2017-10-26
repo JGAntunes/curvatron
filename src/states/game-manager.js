@@ -6,7 +6,6 @@ var gameMananger = function (game) {
   this.powerTimer = null
   this.ui = {}
   this.mode = null
-  colisionMargin = 16
 }
 
 gameMananger.prototype = {
@@ -447,3 +446,5 @@ gameMananger.prototype = {
   }
 
 }
+
+module.exports = gameMananger

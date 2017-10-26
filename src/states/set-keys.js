@@ -111,3 +111,5 @@ setKeys.prototype = {
   }
 
 }
+
+module.exports = setKeys

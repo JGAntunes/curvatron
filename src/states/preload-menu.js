@@ -60,3 +60,5 @@ preloadMenu.prototype = {
   }
 
 }
+
+module.exports = preloadMenu

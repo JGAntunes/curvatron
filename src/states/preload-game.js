@@ -46,3 +46,5 @@ preloadGame.prototype = {
   }
 
 }
+
+module.exports = preloadGame
