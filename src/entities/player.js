@@ -135,7 +135,7 @@ Player.prototype = {
 
   update: function () {
     // Remote players need a time buffer
-    if (!this.actionable && Date.now() - this.created <= 800) return
+    if (!this.actionable && Date.now() - this.created <= 300) return
     // this.speed = 1
     if (!this.actionable && this.updates.length > 0) {
       const newPos = this.updates[0]
