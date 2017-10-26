@@ -75,3 +75,5 @@ PowerUp.prototype = {
 		// this.game.debug.body(this.sprite);
   }
 }
+
+module.exports = PowerUp

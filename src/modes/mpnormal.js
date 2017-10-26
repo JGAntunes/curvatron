@@ -136,3 +136,5 @@ MPNormal.prototype = {
   }
 
 }
+
+module.exports = MPNormal

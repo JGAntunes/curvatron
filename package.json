@@ -6,6 +6,9 @@
   "scripts": {
     "lint": "standard | snazzy",
     "lint:fix": "standard --fix",
+    "build": "browserify src/index.js -o dist.js",
+    "build:watch": "nodemon -e \"js json\" -i \"node_modules\" -x \"npm run build\"",
+    "start": "harp server .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -19,7 +22,13 @@
   },
   "homepage": "https://github.com/JGAntunes/curvatron#readme",
   "devDependencies": {
+    "browserify": "^14.5.0",
+    "harp": "^0.24.1",
+    "nodemon": "^1.12.1",
     "snazzy": "^7.0.0",
     "standard": "^10.0.3"
+  },
+  "dependencies": {
+    "phaser": "^2.6.2"
   }
 }
