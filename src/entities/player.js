@@ -134,7 +134,8 @@ Player.prototype = {
   },
 
   update: function () {
-    if (!this.actionable && Date.now() - this.created <= 500) return
+    // Remote players need a time buffer
+    if (!this.actionable && Date.now() - this.created <= 800) return
     // this.speed = 1
     if (!this.actionable && this.updates.length > 0) {
       const newPos = this.updates[0]
@@ -143,7 +144,7 @@ Player.prototype = {
       // const distance = Math.sqrt(Math.abs(Math.pow(xDiff, 2) + Math.pow(yDiff, 2)))
       const angleDiff = Math.abs(newPos.angle - this.sprite.angle)
       console.log(this.sprite.angle, newPos.angle, angleDiff)
-      if (angleDiff <= 18) {
+      if (angleDiff <= 300 * this.speed * scale) {
         this.updates.shift()
         this.dead = newPos.dead
         this.sprite.angle = newPos.angle
