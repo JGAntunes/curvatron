@@ -123,7 +123,8 @@ class Network {
       x: status.x,
       y: status.y,
       dead: status.dead,
-      direction: status.direction
+      direction: status.direction,
+      tick: status.tick
     }))
     this.node.pubsub.publish(generateTopic(this.gameId), msg)
   }
