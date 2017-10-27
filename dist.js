@@ -103334,6 +103334,8 @@ var Player = function (id, remoteId, x, y, key, mode, game, { actionable } = {})
   this.key = key
   this.dead = false
   this.ready = false
+  this.tick = 0
+  this.wait = 0
   // this.speed = actionable? 1 : 0.8;
   this.speed = 1
   this.angularVelocity = 1
@@ -103424,16 +103426,33 @@ Player.prototype = {
 
   update: function () {
     // Remote players need a time buffer
-    if (!this.actionable && Date.now() - this.created <= 800) return
+    if (!this.actionable && Date.now() - this.created <= 600) return
+    this.tick++
+    // Lagggg, we need to give some time to the remote players
+    if (this.wait > 0) {
+      this.wait--
+      return
+    }
     // this.speed = 1
     if (!this.actionable && this.updates.length > 0) {
       const newPos = this.updates[0]
       // const xDiff = newPos.x - this.sprite.x
       // const yDiff = newPos.y - this.sprite.y
       // const distance = Math.sqrt(Math.abs(Math.pow(xDiff, 2) + Math.pow(yDiff, 2)))
-      const angleDiff = Math.abs(newPos.angle - this.sprite.angle)
-      console.log(this.sprite.angle, newPos.angle, angleDiff)
-      if (angleDiff <= 300 * this.speed * scale) {
+      // const angleDiff = Math.abs(newPos.angle - this.sprite.angle)
+      console.log(this.tick, newPos.tick)
+      // We can be smarter here prolly
+      if (this.tick > newPos.tick) {
+        this.wait = (this.tick - newPos.tick) * 2
+        this.updates.shift()
+        this.dead = newPos.dead
+        this.sprite.angle = newPos.angle
+        // this.sprite.x = (this.sprite.x + newPos.x) / 2
+        // this.sprite.y = (this.sprite.y + newPos.y) / 2
+        this.direction = newPos.direction
+        return
+      }
+      if (this.tick === newPos.tick) {
         this.updates.shift()
         this.dead = newPos.dead
         this.sprite.angle = newPos.angle
@@ -103602,6 +103621,7 @@ Player.prototype = {
     }
     // Update peers
     network.update({
+      tick: this.tick,
       angle: this.sprite.angle,
       x: this.sprite.x,
       y: this.sprite.y,
@@ -103639,7 +103659,7 @@ Player.prototype = {
   },
 
   kill: function (player, other) {
-    this.keyText.destroy()
+    if (this.keyText) this.keyText.destroy()
     if (!this.dead) {
       if (this.mode.sp) {
         var deathScore = parseInt(localStorage.getItem('deathScore'))
