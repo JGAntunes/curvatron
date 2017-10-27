@@ -138,13 +138,14 @@ Player.prototype = {
   update: function () {
     // Remote players need a time buffer
     if (!this.actionable && Date.now() - this.created <= 600) return
-    this.tick++
     // Lagggg, we need to give some time to the remote players
     if (this.wait > 0) {
       this.wait--
       return
     }
-    // this.speed = 1
+
+    this.tick++
+
     if (!this.actionable && this.updates.length > 0) {
       const newPos = this.updates[0]
       // const xDiff = newPos.x - this.sprite.x
