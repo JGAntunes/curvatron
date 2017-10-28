@@ -5,7 +5,6 @@ var boot = function (game) {
   changeColor = false
   mute = false
   firstTime = true
-  iapDone = false
 }
 
 boot.prototype = {
@@ -17,17 +16,11 @@ boot.prototype = {
 
   create: function () {
     // this.game.add.plugin(Phaser.Plugin.Debug);
-    window.orientation = Math.abs(window.orientation) - 90 == 0 ? 'landscape' : 'portrait'
+    window.orientation = Math.abs(window.orientation) - 90 === 0 ? 'landscape' : 'portrait'
 
-    if (Cocoon.Social.GameCenter.nativeAvailable) {
-      window.platform = 'ios'
-    } else if (Cocoon.Social.GooglePlayGames.nativeAvailable) {
-      window.platform = 'android'
-    } else {
-      window.platform = 'desktop'
-    }
+    window.platform = 'desktop'
 
-    console.log(JSON.stringify(platform))
+    console.log(JSON.stringify(window.platform))
 
     window.w2 = this.game.world.width / 2
     window.h2 = this.game.world.height / 2
@@ -60,21 +53,6 @@ boot.prototype = {
     this.physics.startSystem(window.Phaser.Physics.ARCADE)
 
     this.stage.smoothed = false
-
-    if (window.mobile) {
-      window.Cocoon.App.exitCallback(
-        function () {
-          if (this.state.states[this.game.state.current].backPressed) {
-            this.state.states[this.game.state.current].backPressed()
-          }
-          if (this.state.current === 'Menu') {
-            return true
-          } else {
-            return false
-          }
-        }.bind(this)
-      )
-    }
 
     this.state.start('PreloadMenu')
   },
