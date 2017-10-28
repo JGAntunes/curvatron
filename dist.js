@@ -104900,6 +104900,18 @@ multiplayer.prototype = {
       align: 'center'})
     ui.instructions.anchor.setTo(0.5, 0.5)
 
+    ui.playersText = this.game.add.text(0, 0, 'Connected players:', {
+      font: '20px dosis',
+      fill: '#ffffff',
+      align: 'center'})
+    ui.playersText.anchor.setTo(0.5, 0.5)
+
+    ui.playersNum = this.game.add.text(0, 0, this.nPlayers, {
+      font: '20px dosis',
+      fill: '#ffffff',
+      align: 'center'})
+    ui.playersNum.anchor.setTo(0.5, 0.5)
+
     ui.code = this.game.add.inputField(0, 0, {
       font: '18px Arial',
           // fill: '#212121',
@@ -104963,6 +104975,7 @@ multiplayer.prototype = {
     console.log(gameId)
     network.setHandler('list', (from, msg) => {
       this.nPlayers = msg.players.length
+      this.ui.playersNum.setText(this.nPlayers)
             // FIX ME such hack :'(  to get me
       let i
       for (i = 0; i < msg.players.length - 1; i++) {
@@ -104986,6 +104999,7 @@ multiplayer.prototype = {
     network.setHandler('join', (from, data) => {
       players[from] = this.createPlayer(from, {actionable: false})
       this.nPlayers++
+      this.ui.playersNum.setText(this.nPlayers)
       network.listUpdate(players)
     })
   },
@@ -104999,6 +105013,7 @@ multiplayer.prototype = {
     network.setHandler('join', (from, data) => {
       players[from] = this.createPlayer(from, {actionable: false})
       this.nPlayers++
+      this.ui.playersNum.setText(this.nPlayers)
       network.listUpdate(players)
     })
     network.setHandler('start', (from, data) => {
@@ -105032,7 +105047,6 @@ multiplayer.prototype = {
 
   setPositions: function () {
     var ui = this.ui
-
     ui.title.position.set(w2, h2 * 0.3)
     ui.instructions.position.set(w2, h2 * 0.9)
     ui.code.position.set(w2 - 205, h2 * 1.1)
@@ -105040,6 +105054,8 @@ multiplayer.prototype = {
     ui.createButton.position.set(w2 + 205, h2 * 1.4)
     ui.playButton.position.set(w2 + w2 / 2, h2 * 1.6)
     ui.backButton.position.set(w2 / 2, h2 * 1.6)
+    ui.playersText.position.set(w2 - w2 * 1 / 50, h2 * 1.4)
+    ui.playersNum.position.set(w2 + 3 / 25 * w2, h2 * 1.4)
   }
 
 }
