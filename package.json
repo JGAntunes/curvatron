@@ -29,6 +29,7 @@
     "standard": "^10.0.3"
   },
   "dependencies": {
+    "ipfs": "^0.26.0",
     "phaser": "^2.6.2"
   }
 }

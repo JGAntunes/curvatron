@@ -21,8 +21,6 @@ menu.prototype = {
     this.world.pivot.set(0, 0)
     this.world.angle = 0
 
-    Cocoon.Device.setOrientation(Cocoon.Device.Orientations.BOTH)
-
     if (changeColor) {
       chosenColor = this.game.rnd.integerInRange(0, 3)
       colorHex = bgColors[chosenColor]
@@ -123,28 +121,11 @@ menu.prototype = {
       ui.audioButton.input.useHandCursor = true
     }
 
-    if (mobile && !iapDone && platform === 'android') {
-      // Donate
-      ui.donateButton = this.add.button(0, 0, 'donate_button')
-      ui.donateButton.anchor.setTo(1, 1)
-      ui.donateButton.input.useHandCursor = true
-      clickButton(ui.donateButton, this.donate, this)
-    }
-
     clickButton(ui.audioButton, this.muteSound, this)
 
     this.scale.refresh()
     // Place the menu buttons and labels on their correct positions
     this.setPositions()
-
-    if (mobile && firstTime) {
-      firstTime = false
-      this.login()
-
-      if (platform === 'android') {
-        initIAP()
-      }
-    }
 
     /* if (mobile && socialService && socialService.isLoggedIn()) {
       this.getAvatar();
@@ -165,47 +146,6 @@ menu.prototype = {
     }.bind(this));
     loader.start();
   }, */
-
- /* login: function (board) {
-    if (!socialService) {
-      var gp = Cocoon.Social.GooglePlayGames;
-      gp.init({});
-      socialService = gp.getSocialInterface();
-    } else {
-      if (socialService.isLoggedIn()) {
-        this.ui.loginText.setText("login");
-        if (this.ui.avatar) {
-          this.ui.avatar.destroy();
-        }
-        socialService.logout();
-        this.state.restart();
-      } else {
-        if (!socialService.isLoggedIn()) {
-        socialService.login(function(loggedIn, error) {
-          if (error) {
-              console.error("login error: " + error.message);
-            } else {
-              this.getAvatar();
-            }
-          }.bind(this));
-        }
-      }
-    }
-  }, */
-
-  login: function (board) {
-    if (!socialService) {
-      socialInit()
-
-      if (socialService && !socialService.isLoggedIn()) {
-        socialService.login(function (loggedIn, error) {
-          if (error) {
-            console.error('login error: ' + error.message)
-          }
-        })
-      }
-    }
-  },
 
   singlePlayer: function () {
     this.state.start('SinglePlayer', true, false)

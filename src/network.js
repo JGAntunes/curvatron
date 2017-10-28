@@ -1,3 +1,4 @@
+const Ipfs = require('ipfs')
 const ROOT_TOPIC = '/curvatron'
 
 const generateTopic = (id) => {
@@ -9,7 +10,7 @@ class Network {
     let id = ''
     const typedArray = new Uint32Array(4)
     window.crypto.getRandomValues(typedArray)
-    typedArray.forEach((elem) => id += elem.toString(36))
+    typedArray.forEach((elem) => { id += elem.toString(36) })
     return id
   }
 
@@ -18,13 +19,7 @@ class Network {
       init: true,
       start: true,
       config: {
-        Bootstrap: [
-            // "/dns4/ams-1.bootstrap.libp2p.io/tcp/443/wss/ipfs/QmSoLer265NRgSp2LA3dPaeykiS1J6DifTC88f5uVQKNAd",
-            // "/dns4/sfo-3.bootstrap.libp2p.io/tcp/443/wss/ipfs/QmSoLPppuBtQSGwKDZT2M73ULpjvfd3aZ6ha4oFGL1KrGM",
-            // "/dns4/sgp-1.bootstrap.libp2p.io/tcp/443/wss/ipfs/QmSoLSafTMBsPKadTEgaXctDQVcqN88CNLHXMkTNwMKPnu",
-            // "/dns4/nyc-1.bootstrap.libp2p.io/tcp/443/wss/ipfs/QmSoLueR4xBeUbY9WZ9xGUUxunbKWcrNFTDAadQJmocnWm",
-            // "/dns4/nyc-2.bootstrap.libp2p.io/tcp/443/wss/ipfs/QmSoLV4Bbm51jM9C4gDYZQ9Cy3U6aXMJDAbzgu2fzaDs64"
-        ],
+        Bootstrap: [],
         Addresses: {
           Swarm: [
             '/dns4/star-signal.cloud.ipfs.team/wss/p2p-webrtc-star'
@@ -34,7 +29,6 @@ class Network {
       },
       EXPERIMENTAL: { // enable experimental features
         pubsub: true
-        // dht: true // enable KadDHT, currently not interopable with go-ipfs
       }
     })
 
