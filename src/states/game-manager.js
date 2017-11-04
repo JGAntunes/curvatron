@@ -166,7 +166,7 @@ gameMananger.prototype = {
         Object.values(players).forEach((player) => player.pause())
         return
       }
-      if (this.wait === 0 ) {
+      if (this.wait === 0) {
         this.wait = -1
         Object.values(players).forEach((player) => player.unpause())
       }
@@ -181,228 +181,228 @@ gameMananger.prototype = {
       this.mode.createObstacle();
     } */
 
-    if (!gameOver) {
+      if (!gameOver) {
       // Give crown
-      if (this.mode.update) {
-        this.mode.update()
+        if (this.mode.update) {
+          this.mode.update()
+        }
+        if (this.mode.sp && players[0].dead) {
+          this.endGame()
+        }
       }
-      if (this.mode.sp && players[0].dead) {
-        this.endGame()
-      }
-    }
     // Update players
-    Object.keys(players).forEach((key) => players[key].update(this.tick))
-  }
-},
-
-createPower: function () {
-  if (this.mode.createPower) {
-    this.mode.createPower('point')
-  } else {
-    var powerup = new PowerUp(this.game, 'point', this.mode)
-    powerup.create()
-  }
-},
-
-endGame: function () {
-  var ui = this.ui
-  if (!gameOver) {
-    if (this.mode.endGame) {
-      this.mode.endGame()
+      Object.keys(players).forEach((key) => players[key].update(this.tick))
     }
+  },
 
-    if (!mute) {
-      menuMusic.play()
-      menuMusic.volume = 1
-    }
-    ui.overlay.inputEnabled = false
-    if (this.mode.sp) {
-      this.game.time.events.add(Phaser.Timer.SECOND * 1, function () {
-        ui.overlay.inputEnabled = true
-      }, this)
-    }
-
-    ui.overlay.width = w2 * 2
-    ui.overlay.height = h2 * 2
-    if (!this.mode.sp) {
-      this.game.time.events.remove(this.powerTimer)
-      this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR).onDown.add(this.restart, this)
-    }
-
-    var restartButton = this.add.button(w2 + 97, h2 - 97, 'restart_button')
-
-    restartButton.scale.set(1, 1)
-    restartButton.anchor.setTo(0.5, 0.5)
-    restartButton.input.useHandCursor = true
-    clickButton(restartButton, this.restart, this)
-
-    var mainMenu = this.add.button(w2 - 97, h2 - 97, 'exit_button')
-    mainMenu.scale.set(1, 1)
-    mainMenu.anchor.setTo(0.5, 0.5)
-    mainMenu.input.useHandCursor = true
-    clickButton(mainMenu, function () { this.state.start('Menu') }, this)
-
-    if (mobile) {
-      pauseSprite.alpha = 0
-      pauseSprite.input.useHandCursor = false
-    }
-
-    if (this.mode.sp) {
-      var spAuxLabel = this.add.sprite(w2, h2 + 77, 'aux-stat')
-      spAuxLabel.scale.set(0.9, 0.9)
-      spAuxLabel.anchor.setTo(0.5, 0.5)
-      spAuxLabel.alpha = 0.7
-
-      var spScoreLabel = this.add.sprite(w2, h2 + 217, 'score-stat')
-      spScoreLabel.scale.set(0.6, 0.6)
-      spScoreLabel.anchor.setTo(0.5, 0.5)
-      spScoreLabel.alpha = 0.7
-      if (mobile) {
-        spScoreLabel.x = w2 - 60
-      }
-
-      var textCurrentScore = this.add.text(w2, h2 + 77, this.mode.getScore().toString(), {
-        font: '90px dosis',
-        fill: colorHexDark,
-        align: 'center'
-      })
-
-      if (this.mode.submitScore) {
-        this.mode.submitScore()
-      }
-
-      var textHighScore = this.add.text(w2 + 35, h2 + 220, this.mode.getHighScore().toString(), {
-        font: '40px dosis',
-        fill: colorHexDark,
-        align: 'center'
-      })
-
-      if (mobile) {
-        textHighScore.x = w2 + 35 - 60
-      }
-      textCurrentScore.anchor.setTo(0.5, 0.5)
-      textHighScore.anchor.setTo(0.5, 0.5)
-    }
-    gameOver = true
-  }
-},
-
-pause: function () {
-  var ui = this.ui
-  if (!paused) { // pause
-    this.game.tweens.pauseAll()
-    if (this.mode.pause) {
-      this.mode.pause()
-    }
-
-    if (gameOver) {
-      this.state.start('Menu')
-    }
-    ui.overlay.width = w2 * 2
-    ui.overlay.height = h2 * 2
-
-    if (pauseTween) {
-      pauseTween.stop()
-    }
-    paused = true
-    ui.overlay.inputEnabled = false
-
-    if (mobile) {
-      pauseSprite.alpha = 0
-    } else if (this.mode.sp && this.mode.leaderboardID) {
-      tempLabel.alpha = 0
-      tempLabelText.alpha = 0
-    }
-
-    if (!this.mode.sp) {
-      this.game.time.events.remove(this.powerTimer)
-    }
-
-    ui.menu = this.add.button(w2, h2 - 150, 'resume_button')
-    ui.menu.anchor.setTo(0.5, 0.5)
-    ui.menu.scale.set(1, 1)
-    ui.menu.input.useHandCursor = true
-    clickButton(ui.menu, this.pause, this)
-
-    ui.restart = this.add.button(w2 - 150, h2, 'restart_button')
-    ui.restart.anchor.setTo(0.5, 0.5)
-    ui.restart.scale.set(1, 1)
-    ui.restart.input.useHandCursor = true
-    clickButton(ui.restart, this.restart, this)
-
-    ui.exit = this.add.button(w2, h2 + 150, 'exit_button')
-    ui.exit.anchor.setTo(0.5, 0.5)
-    ui.exit.scale.set(1, 1)
-    ui.exit.input.useHandCursor = true
-    clickButton(ui.exit, function () { this.state.start('Menu') }, this)
-
-    if (mute) {
-      ui.audioButton = this.add.button(w2 + 150, h2, 'audiooff_button')
-      ui.audioButton.anchor.setTo(0.5, 0.5)
-      ui.audioButton.scale.set(1, 1)
-      ui.audioButton.input.useHandCursor = true
+  createPower: function () {
+    if (this.mode.createPower) {
+      this.mode.createPower('point')
     } else {
-      ui.audioButton = this.add.button(w2 + 150, h2, 'audio_button')
-      ui.audioButton.anchor.setTo(0.5, 0.5)
-      ui.audioButton.scale.set(1, 1)
-      ui.audioButton.input.useHandCursor = true
+      var powerup = new PowerUp(this.game, 'point', this.mode)
+      powerup.create()
     }
-    clickButton(ui.audioButton, this.muteSound, this)
-  } else { // unpause
-    this.game.tweens.resumeAll()
-    ui.overlay.scale.set(0)
+  },
 
-    if (this.mode.unPause) {
-      this.mode.unPause()
+  endGame: function () {
+    var ui = this.ui
+    if (!gameOver) {
+      if (this.mode.endGame) {
+        this.mode.endGame()
+      }
+
+      if (!mute) {
+        menuMusic.play()
+        menuMusic.volume = 1
+      }
+      ui.overlay.inputEnabled = false
+      if (this.mode.sp) {
+        this.game.time.events.add(Phaser.Timer.SECOND * 1, function () {
+          ui.overlay.inputEnabled = true
+        }, this)
+      }
+
+      ui.overlay.width = w2 * 2
+      ui.overlay.height = h2 * 2
+      if (!this.mode.sp) {
+        this.game.time.events.remove(this.powerTimer)
+        this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR).onDown.add(this.restart, this)
+      }
+
+      var restartButton = this.add.button(w2 + 97, h2 - 97, 'restart_button')
+
+      restartButton.scale.set(1, 1)
+      restartButton.anchor.setTo(0.5, 0.5)
+      restartButton.input.useHandCursor = true
+      clickButton(restartButton, this.restart, this)
+
+      var mainMenu = this.add.button(w2 - 97, h2 - 97, 'exit_button')
+      mainMenu.scale.set(1, 1)
+      mainMenu.anchor.setTo(0.5, 0.5)
+      mainMenu.input.useHandCursor = true
+      clickButton(mainMenu, function () { this.state.start('Menu') }, this)
+
+      if (mobile) {
+        pauseSprite.alpha = 0
+        pauseSprite.input.useHandCursor = false
+      }
+
+      if (this.mode.sp) {
+        var spAuxLabel = this.add.sprite(w2, h2 + 77, 'aux-stat')
+        spAuxLabel.scale.set(0.9, 0.9)
+        spAuxLabel.anchor.setTo(0.5, 0.5)
+        spAuxLabel.alpha = 0.7
+
+        var spScoreLabel = this.add.sprite(w2, h2 + 217, 'score-stat')
+        spScoreLabel.scale.set(0.6, 0.6)
+        spScoreLabel.anchor.setTo(0.5, 0.5)
+        spScoreLabel.alpha = 0.7
+        if (mobile) {
+          spScoreLabel.x = w2 - 60
+        }
+
+        var textCurrentScore = this.add.text(w2, h2 + 77, this.mode.getScore().toString(), {
+          font: '90px dosis',
+          fill: colorHexDark,
+          align: 'center'
+        })
+
+        if (this.mode.submitScore) {
+          this.mode.submitScore()
+        }
+
+        var textHighScore = this.add.text(w2 + 35, h2 + 220, this.mode.getHighScore().toString(), {
+          font: '40px dosis',
+          fill: colorHexDark,
+          align: 'center'
+        })
+
+        if (mobile) {
+          textHighScore.x = w2 + 35 - 60
+        }
+        textCurrentScore.anchor.setTo(0.5, 0.5)
+        textHighScore.anchor.setTo(0.5, 0.5)
+      }
+      gameOver = true
     }
+  },
+
+  pause: function () {
+    var ui = this.ui
+    if (!paused) { // pause
+      this.game.tweens.pauseAll()
+      if (this.mode.pause) {
+        this.mode.pause()
+      }
+
+      if (gameOver) {
+        this.state.start('Menu')
+      }
+      ui.overlay.width = w2 * 2
+      ui.overlay.height = h2 * 2
+
+      if (pauseTween) {
+        pauseTween.stop()
+      }
+      paused = true
+      ui.overlay.inputEnabled = false
+
+      if (mobile) {
+        pauseSprite.alpha = 0
+      } else if (this.mode.sp && this.mode.leaderboardID) {
+        tempLabel.alpha = 0
+        tempLabelText.alpha = 0
+      }
+
+      if (!this.mode.sp) {
+        this.game.time.events.remove(this.powerTimer)
+      }
+
+      ui.menu = this.add.button(w2, h2 - 150, 'resume_button')
+      ui.menu.anchor.setTo(0.5, 0.5)
+      ui.menu.scale.set(1, 1)
+      ui.menu.input.useHandCursor = true
+      clickButton(ui.menu, this.pause, this)
+
+      ui.restart = this.add.button(w2 - 150, h2, 'restart_button')
+      ui.restart.anchor.setTo(0.5, 0.5)
+      ui.restart.scale.set(1, 1)
+      ui.restart.input.useHandCursor = true
+      clickButton(ui.restart, this.restart, this)
+
+      ui.exit = this.add.button(w2, h2 + 150, 'exit_button')
+      ui.exit.anchor.setTo(0.5, 0.5)
+      ui.exit.scale.set(1, 1)
+      ui.exit.input.useHandCursor = true
+      clickButton(ui.exit, function () { this.state.start('Menu') }, this)
+
+      if (mute) {
+        ui.audioButton = this.add.button(w2 + 150, h2, 'audiooff_button')
+        ui.audioButton.anchor.setTo(0.5, 0.5)
+        ui.audioButton.scale.set(1, 1)
+        ui.audioButton.input.useHandCursor = true
+      } else {
+        ui.audioButton = this.add.button(w2 + 150, h2, 'audio_button')
+        ui.audioButton.anchor.setTo(0.5, 0.5)
+        ui.audioButton.scale.set(1, 1)
+        ui.audioButton.input.useHandCursor = true
+      }
+      clickButton(ui.audioButton, this.muteSound, this)
+    } else { // unpause
+      this.game.tweens.resumeAll()
+      ui.overlay.scale.set(0)
+
+      if (this.mode.unPause) {
+        this.mode.unPause()
+      }
 
     // if (!this.mode.sp) {
     // 	this.powerTimer = this.game.time.events.loop(Phaser.Timer.SECOND * 2, this.createPower, this);
     // }
 
-    ui.overlay.inputEnabled = true
+      ui.overlay.inputEnabled = true
 
-    if (mobile) {
-      pauseSprite.alpha = 0.2
-      pauseSprite.input.useHandCursor = true
+      if (mobile) {
+        pauseSprite.alpha = 0.2
+        pauseSprite.input.useHandCursor = true
+      }
+      ui.menu.destroy()
+      ui.restart.destroy()
+      ui.exit.destroy()
+      ui.audioButton.destroy()
+      paused = false
     }
-    ui.menu.destroy()
-    ui.restart.destroy()
-    ui.exit.destroy()
-    ui.audioButton.destroy()
-    paused = false
-  }
-},
+  },
 
-restart: function () {
-  this.state.restart(true, false, this.mode)
-},
+  restart: function () {
+    this.state.restart(true, false, this.mode)
+  },
 
-touchPauseButton: function () {
-  if (!paused) {
+  touchPauseButton: function () {
+    if (!paused) {
+      this.pause()
+      if (mobile) {
+        pauseSprite.input.useHandCursor = false
+      }
+    }
+  },
+
+  muteSound: function () {
+    if (mute) {
+      this.ui.audioButton.loadTexture('audio_button')
+      mute = false
+    } else {
+      this.ui.audioButton.loadTexture('audiooff_button')
+      mute = true
+      if (menuMusic && menuMusic.isPlaying) {
+        menuMusic.stop()
+      }
+    }
+  },
+
+  backPressed: function () {
     this.pause()
-    if (mobile) {
-      pauseSprite.input.useHandCursor = false
-    }
   }
-},
-
-muteSound: function () {
-  if (mute) {
-    this.ui.audioButton.loadTexture('audio_button')
-    mute = false
-  } else {
-    this.ui.audioButton.loadTexture('audiooff_button')
-    mute = true
-    if (menuMusic && menuMusic.isPlaying) {
-      menuMusic.stop()
-    }
-  }
-},
-
-backPressed: function () {
-  this.pause()
-},
 
 }
 

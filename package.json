@@ -4,8 +4,8 @@
   "description": "Like tron but curva",
   "main": "index.js",
   "scripts": {
-    "lint": "standard | snazzy",
-    "lint:fix": "standard --fix",
+    "lint": "standard  src/**/*.js | snazzy",
+    "lint:fix": "standard --fix src/**/*.js",
     "build": "browserify src/index.js --debug | uglifyjs > dist.js",
     "build:watch": "watchify src/index.js -o dist.js -v",
     "start": "harp server .",

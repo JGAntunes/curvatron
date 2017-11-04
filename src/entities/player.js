@@ -45,7 +45,7 @@ class Player {
     this.collectSemaphore = 0
   }
 
-  static findById(id) {
+  static findById (id) {
     Object.keys(window.players).find((key) => window.players[key].id === id)
   }
 
@@ -440,7 +440,6 @@ class Player {
   render () {
     this.game.debug.body(this.sprite)
   }
-
 }
 
 module.exports = Player
