@@ -94,7 +94,7 @@ multiplayer.prototype = {
     return new Player(playerNum, remoteId,
           Math.cos((2 * Math.PI / 9) * playerNum - angle) * (w2 - 200) + w2,
           Math.sin((2 * Math.PI / 9) * playerNum - angle) * (h2 - 100) + h2,
-          keys[playerNum], this.mode, this.game, options)
+          this.mode, this.game, options)
   },
 
         // FIXME this approach is just the worst ever

@@ -2,15 +2,6 @@ const MPNormal = require('../modes/mpnormal')
 
 var menu = function (game) {
   maxPlayers = 7
-  keys = [
-    Phaser.Keyboard.W,
-    Phaser.Keyboard.P,
-    Phaser.Keyboard.B,
-    Phaser.Keyboard.Z,
-    Phaser.Keyboard.M,
-    Phaser.Keyboard.C,
-    Phaser.Keyboard.R,
-    Phaser.Keyboard.U]
   menuMusic = null
   this.ui = {}
   socialService = null

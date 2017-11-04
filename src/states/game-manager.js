@@ -6,6 +6,9 @@ var gameMananger = function (game) {
   this.powerTimer = null
   this.ui = {}
   this.mode = null
+
+  this.tick = 0
+  this.wait = -1
 }
 
 gameMananger.prototype = {
@@ -23,8 +26,16 @@ gameMananger.prototype = {
 
       // Listen for players updates
       network.setHandler('update', (from, msg) => {
-        players[from].remoteUpdate(msg)
+        // Hack, should work with latency
+        if (this.tick > msg.tick) {
+          this.wait = (this.tick - msg.tick) * 4
+          return
+        }
+        this.wait = 0
+        players[from].onRemoteUpdate(msg)
       })
+
+      // setInterval(() => me.sendUpdate(), 5000)
     }
 
     gameOver = false
@@ -149,6 +160,17 @@ gameMananger.prototype = {
 
   update: function () {
     if (!paused) {
+      // Lagggg, we need to give some time to the remote players
+      if (this.wait > 0) {
+        this.wait--
+        Object.values(players).forEach((player) => player.pause())
+        return
+      }
+      if (this.wait === 0 ) {
+        this.wait = -1
+        Object.values(players).forEach((player) => player.unpause())
+      }
+      this.tick++
       if (menuMusic.isPlaying && (menuMusic.volume == 1) && !gameOver && !mute) {
         menuMusic.fadeOut(2000)
       }
@@ -168,9 +190,9 @@ gameMananger.prototype = {
         this.endGame()
       }
     }
+    // Update players
+    Object.keys(players).forEach((key) => players[key].update(this.tick))
   }
-  // Update players
-  Object.keys(players).forEach((key) => players[key].update())
 },
 
 createPower: function () {

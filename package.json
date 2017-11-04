@@ -6,8 +6,8 @@
   "scripts": {
     "lint": "standard | snazzy",
     "lint:fix": "standard --fix",
-    "build": "browserify src/index.js -o dist.js",
-    "build:watch": "nodemon -e \"js json\" -i node_modules/ -i dist.js -x \"npm run build\"",
+    "build": "browserify src/index.js --debug | uglifyjs > dist.js",
+    "build:watch": "watchify src/index.js -o dist.js -v",
     "start": "harp server .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -24,9 +24,9 @@
   "devDependencies": {
     "browserify": "^14.5.0",
     "harp": "^0.24.1",
-    "nodemon": "^1.12.1",
     "snazzy": "^7.0.0",
-    "standard": "^10.0.3"
+    "standard": "^10.0.3",
+    "watchify": "^3.9.0"
   },
   "dependencies": {
     "ipfs": "^0.26.0",

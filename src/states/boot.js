@@ -1,4 +1,7 @@
 var boot = function (game) {
+  window.gameConfig = {
+    key: Phaser.Keyboard.W
+  }
   playCounter = 0
   w2 = 0
   h2 = 0

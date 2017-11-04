@@ -113,12 +113,13 @@ class Network {
     const Buffer = this.node.types.Buffer
     const msg = new Buffer(JSON.stringify({
       op: 'update',
+      type: status.type,
       angle: status.angle,
       x: status.x,
       y: status.y,
       dead: status.dead,
       direction: status.direction,
-      tick: status.tick
+      timestamp: Date.now()
     }))
     this.node.pubsub.publish(generateTopic(this.gameId), msg)
   }
