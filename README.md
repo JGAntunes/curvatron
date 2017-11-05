@@ -1,9 +1,6 @@
 ![Curvatron](http://i.imgur.com/R6xOCRX.png)
 
-Single button snake, for up to 8 players. Trickier than it looks.
-
-## Requirements
-[npm](https://www.npmjs.com/)
+This is a fork from the original [Curvatron](https://github.com/bravebunny/curvatron) with a focus on having Curavtorn running in a P2P multiplayer mode on top of [IPFS](https://github.com/ipfs/js-ipfs) [pubsub features](https://github.com/libp2p/js-libp2p-floodsub)
 
 ## Install
 Run the following commands:
@@ -15,12 +12,3 @@ npm install
 
 ## Running the game
 After installing, start with `npm start`
-
-
-## Play the web/mobile version
-
-[Web](http://curvatron.bravebunny.co/)
- | 
-[Android Play Store](https://play.google.com/store/apps/details?id=co.bravebunny.curvatron)
- | 
-[iOS App Store](https://itunes.apple.com/WebObjects/MZStore.woa/wa/viewSoftware?id=983373863&mt=8)
