@@ -9,6 +9,7 @@ class Player {
     this.direction = 1
     // New multiplayer stuff
     this.remoteId = remoteId
+    this.tick = 0
     this.isReady = false
     this.created = null
     this.updates = []
@@ -115,7 +116,8 @@ class Player {
     ), false)
   }
 
-  update () {
+  update (tick) {
+    this.tick = tick
     // Remote players need a time buffer
     if (!this.actionable && Date.now() - this.created <= 500) return
 
@@ -293,7 +295,7 @@ class Player {
   sendUpdate () {
     // Update peers
     network.update({
-      // tick: this.tick,
+      tick: this.tick,
       angle: this.sprite.body.angle,
       x: this.sprite.body.x,
       y: this.sprite.body.y,

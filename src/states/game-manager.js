@@ -18,25 +18,23 @@ gameMananger.prototype = {
 
   create: function () {
     this.orientation = Math.abs(window.orientation) - 90 == 0 ? 'landscape' : 'portrait'
-    scale = 1
-    if (!this.mode.sp) {
-      scale = (-1 / 24) * this.mode.nPlayers + 7 / 12
 
-      Object.values(players).forEach((player) => player.create())
+    scale = (-1 / 24) * this.mode.nPlayers + 7 / 12
 
-      // Listen for players updates
-      network.setHandler('update', (from, msg) => {
-        // Hack, should work with latency
-        if (this.tick > msg.tick) {
-          this.wait = (this.tick - msg.tick) * 4
-          return
-        }
-        this.wait = 0
-        players[from].onRemoteUpdate(msg)
-      })
+    Object.values(players).forEach((player) => player.create())
 
-      // setInterval(() => me.sendUpdate(), 5000)
-    }
+    // Listen for players updates
+    network.setHandler('update', (from, msg) => {
+      // Hack, should work with latency
+      if (this.tick > msg.tick) {
+        this.wait = (this.tick - msg.tick) + 2
+        return
+      }
+      this.wait = 0
+      players[from].onRemoteUpdate(msg)
+    })
+
+    // setInterval(() => me.sendUpdate(), 5000)
 
     gameOver = false
     muteAudio = false
@@ -159,40 +157,35 @@ gameMananger.prototype = {
   },
 
   update: function () {
-    if (!paused) {
-      // Lagggg, we need to give some time to the remote players
-      if (this.wait > 0) {
-        this.wait--
-        Object.values(players).forEach((player) => player.pause())
-        return
-      }
-      if (this.wait === 0) {
-        this.wait = -1
-        Object.values(players).forEach((player) => player.unpause())
-      }
-      this.tick++
-      if (menuMusic.isPlaying && (menuMusic.volume == 1) && !gameOver && !mute) {
-        menuMusic.fadeOut(2000)
-      }
-      totalTime += this.game.time.physicsElapsed
+    if (paused) return
 
-      /* if(!this.mode.gridIsFull()){
-      this.mode.createPower("point");
-      this.mode.createObstacle();
-    } */
-
-      if (!gameOver) {
-      // Give crown
-        if (this.mode.update) {
-          this.mode.update()
-        }
-        if (this.mode.sp && players[0].dead) {
-          this.endGame()
-        }
-      }
-    // Update players
-      Object.keys(players).forEach((key) => players[key].update(this.tick))
+    // Lagggg, we need to give some time to the remote players
+    if (this.wait > 0) {
+      this.wait--
+      Object.values(players).forEach((player) => player.pause())
+      return
     }
+    if (this.wait === 0) {
+      this.wait = -1
+      Object.values(players).forEach((player) => player.unpause())
+    }
+    this.tick++
+    if (menuMusic.isPlaying && (menuMusic.volume == 1) && !gameOver && !mute) {
+      menuMusic.fadeOut(2000)
+    }
+    totalTime += this.game.time.physicsElapsed
+
+    if (!gameOver) {
+    // Give crown
+      if (this.mode.update) {
+        this.mode.update()
+      }
+      if (this.mode.sp && players[0].dead) {
+        this.endGame()
+      }
+    }
+    // Update players
+    Object.keys(players).forEach((key) => players[key].update(this.tick))
   },
 
   createPower: function () {
