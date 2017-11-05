@@ -1,3 +1,8 @@
+const config = require('../config')
+const gameState = require('../game-state')
+
+const { Phaser } = window
+
 const COLLISION_MARGIN = 16
 
 class Player {
@@ -8,6 +13,7 @@ class Player {
     this.score = 0
     this.direction = 1
     // New multiplayer stuff
+    this.gameState = {}
     this.remoteId = remoteId
     this.tick = 0
     this.isReady = false
@@ -19,7 +25,7 @@ class Player {
     this.id = id
     this.x = x
     this.y = y
-    this.key = window.gameConfig.key
+    this.key = config.key
     this.dead = false
     this.ready = false
 
@@ -41,18 +47,18 @@ class Player {
     this.shrink = false
     this.shrinkAmount = 200
     this.touch = null
-    this.orientation = null
     this.playerMobileButton = null
     this.collectSemaphore = 0
   }
 
   static findById (id) {
-    Object.keys(window.players).find((key) => window.players[key].id === id)
+    Object.keys(gameState.players).find((key) => gameState.players[key].id === parseInt(id))
   }
 
-  create () {
+  create (managerGameState) {
+    this.gameState = managerGameState
+    const { scale, w2, h2 } = config
     this.created = Date.now()
-    this.orientation = Math.abs(window.orientation) - 90 === 0 ? 'landscape' : 'portrait'
     this.sprite = this.game.add.sprite(this.x, this.y, 'player' + this.id)
     this.sprite.name = '' + this.id
 
@@ -66,7 +72,7 @@ class Player {
       this.sprite.rotation = Math.PI
     }
 
-    this.color = Phaser.Color.hexToColor(colorPlayers[this.id])
+    this.color = Phaser.Color.hexToColor(config.colorPlayers[this.id])
 
     this.game.physics.enable(this.sprite, Phaser.Physics.ARCADE)
     this.sprite.scale.set(scale)
@@ -76,8 +82,8 @@ class Player {
     if (!this.actionable) return
 
     // Set the controls for the player
-    if (mobile) {
-      if (this.orientation === 'portrait') {
+    if (config.mobile) {
+      if (config.orientation === 'portrait') {
         this.playerMobileButton = this.game.add.button(w2, this.y, 'overlay', null, this)
         this.playerMobileButton.width = this.game.width
         this.playerMobileButton.height = this.game.height / 2
@@ -107,8 +113,8 @@ class Player {
   collisionDetection (x, y) {
     if (this.mode.noCollisions) return false
 
-    const collSize = 12 * scale
-    return Object.values(players).reduce((acc, player) => (
+    const collSize = 12 * config.scale
+    return Object.values(gameState.players).reduce((acc, player) => (
       acc || player.trailArray.reduce((acc, curTrail) => (
         acc || (curTrail.x - collSize < x && curTrail.x + collSize > x &&
            curTrail.y - collSize < y && curTrail.y + collSize > y)
@@ -116,16 +122,19 @@ class Player {
     ), false)
   }
 
-  update (tick) {
+  update (managerGameState) {
+    const { paused, tick, bmd, borders } = managerGameState
+    const { scale } = config
+    this.gameState = managerGameState
     this.tick = tick
     // Remote players need a time buffer
-    if (!this.actionable && Date.now() - this.created <= 500) return
+    // if (!this.actionable && Date.now() - this.created <= 100) return
 
     // Paused?
-    if (!this.paused && window.paused) {
+    if (!this.paused && paused) {
       this.paused = true
       this.pause()
-    } else if (this.paused && !window.paused) {
+    } else if (this.paused && !paused) {
       this.paused = false
       this.unpause()
     }
@@ -180,14 +189,14 @@ class Player {
       if (collisionExists) this.kill()
     }
 
-    this.game.physics.arcade.overlap(this.sprite, groupPowers, this.collect, null, this)
+    // this.game.physics.arcade.overlap(this.sprite, groupPowers, this.collect, null, this)
 
     if (this.mode.obstacleGroup) {
       if (this.game.physics.arcade.overlap(this.sprite, this.mode.obstacleGroup, this.kill, null, this)) {
       }
     }
 
-    Object.values(players).forEach((player) => {
+    Object.values(gameState.players).forEach((player) => {
       if (player.id !== this.id) {
         this.game.physics.arcade.overlap(this.sprite, player.sprite, this.kill, null, this)
       }
@@ -244,57 +253,44 @@ class Player {
   }
 
   keyPressed () {
+    const { totalTime, gameOver, paused, moveSounds, pauseSprite } = this.gameState
     this.ready = true
     this.showOneKey = true
     this.showKeyTime = 2 + totalTime
-    if (!this.dead) {
-      if (this.direction === 1 && !gameOver && !paused) {
-        this.direction = -1
-        if (!mute && !paused) {
-          moveSounds[0].play()
-        }
-      } else if (!gameOver && !paused) {
-        this.direction = 1
-        if (!mute) {
-          moveSounds[1].play()
-        }
+
+    if (this.dead) return
+
+    if (this.direction === 1 && !gameOver && !paused) {
+      this.direction = -1
+      if (!config.mute && !paused) {
+        moveSounds[0].play()
       }
-      if (this.keyText.alpha === 1) {
-        this.textTween = this.game.add.tween(this.keyText).to({ alpha: 0 }, 2000, Phaser.Easing.Linear.None, true)
-
-        if (mobile && this.mode.sp) {
-          this.game.add.tween(this.touch).to({ alpha: 0 }, 1000, Phaser.Easing.Linear.None, true)
-          this.game.add.tween(this.touch).to({ y: this.touch.y + 100 }, 1000, Phaser.Easing.Circular.In, true)
-        } else if (mobile && !this.mode.sp) {
-          if (this.orientation === 'portrait') {
-            this.game.add.tween(this.touch).to({ alpha: 0 }, 1000, Phaser.Easing.Linear.None, true)
-            if (this.touch.angle === 0) {
-              this.game.add.tween(this.touch).to({ y: this.touch.y + 90 }, 1000, Phaser.Easing.Circular.In, true)
-            } else {
-              this.game.add.tween(this.touch).to({ y: this.touch.y - 90 }, 1000, Phaser.Easing.Circular.In, true)
-            }
-          }	else {
-            this.game.add.tween(this.touch).to({ alpha: 0 }, 1000, Phaser.Easing.Linear.None, true)
-            this.game.add.tween(this.touch).to({ x: this.touch.x - this.touch.angle }, 1000, Phaser.Easing.Circular.In, true)
-          }
-        }
-
-        if (this.mode.sp && !mobile && this.mode.leaderboardID) {
-          this.game.add.tween(tempLabel).to({ alpha: 0 }, 2000, Phaser.Easing.Linear.None, true)
-          this.game.add.tween(tempLabelText).to({ alpha: 0 }, 2000, Phaser.Easing.Linear.None, true)
-        }
-
-        if (mobile && pauseSprite.alpha === 1) {
-          window.pauseTween = this.game.add.tween(pauseSprite).to({ alpha: 0.2 }, 2000, Phaser.Easing.Linear.None, true)
-        }
+    } else if (!gameOver && !paused) {
+      this.direction = 1
+      if (!config.mute) {
+        moveSounds[1].play()
       }
     }
+
+    if (this.keyText.alpha === 1) {
+      this.textTween = this.game.add.tween(this.keyText).to({ alpha: 0 }, 2000, Phaser.Easing.Linear.None, true)
+
+      if (config.mobile) {
+        this.game.add.tween(this.touch).to({ alpha: 0 }, 1000, Phaser.Easing.Linear.None, true)
+        this.game.add.tween(this.touch).to({ y: this.touch.y + 100 }, 1000, Phaser.Easing.Circular.In, true)
+      }
+
+      if (config.mobile && pauseSprite.alpha === 1) {
+        this.gameState.pauseTween = this.game.add.tween(pauseSprite).to({ alpha: 0.2 }, 2000, Phaser.Easing.Linear.None, true)
+      }
+    }
+
     this.sendUpdate()
   }
 
   sendUpdate () {
     // Update peers
-    network.update({
+    window.network.update({
       tick: this.tick,
       angle: this.sprite.body.angle,
       x: this.sprite.body.x,
@@ -305,10 +301,11 @@ class Player {
   }
 
   click () {
-    var x1 = w2 - 65
-    var x2 = w2 + 65
-    var y1 = h2 - 65
-    var y2 = h2 + 65
+    const { w2, h2 } = config
+    const x1 = w2 - 65
+    const x2 = w2 + 65
+    const y1 = h2 - 65
+    const y2 = h2 + 65
     if (!(this.game.input.position.x > x1 &&
       this.game.input.position.x < x2 &&
       this.game.input.position.y > y1 &&
@@ -320,20 +317,13 @@ class Player {
   kill (player, other) {
     if (this.keyText) this.keyText.destroy()
     if (!this.dead) {
-      if (this.mode.sp) {
-        var deathScore = parseInt(localStorage.getItem('deathScore'))
-        if (isNaN(deathScore)) {
-          deathScore = 0
-        }
-        localStorage.setItem('deathScore', deathScore + 1)
-      }
-      if (this.mode.sp || (!player && !other)) {
+      if (!player && !other) {
         this.sprite.kill()
         this.dead = true
       }
 
-      if (!mute) {
-        killSound.play()
+      if (!config.mute) {
+        this.gameState.killSound.play()
       }
 
       if (this.mode.kill) {
@@ -342,8 +332,9 @@ class Player {
     }
 
     if (other && !this.mode.sp) {
-      var thisPlayer = Player.findById(player.name)
-      var otherPlayer = Player.findById(other.name)
+      debugger
+      const thisPlayer = Player.findById(player.name)
+      const otherPlayer = Player.findById(other.name)
       if (thisPlayer.score >= otherPlayer.score) {
         otherPlayer.kill()
       }
@@ -353,25 +344,26 @@ class Player {
     }
   }
 
-  collect (player, power) {
-    if (this.collectSemaphore === 0) {
-      this.collectSemaphore = 1
-      if (!mute) {
-        collectSound.play()
-      }
-
-      if (this.mode.collect) {
-        this.mode.collect(player, power, this)
-      }
-
-      this.game.add.tween(power).to({ alpha: 0 }, 300, Phaser.Easing.Linear.None, true)
-      const powerTween = this.game.add.tween(power.scale).to({x: 0, y: 0}, 300, Phaser.Easing.Back.In, true)
-      powerTween.onComplete.add(function () { power.destroy(); this.collectSemaphore = 0 }, this)
-    }
-  }
+  // collect (player, power) {
+  //   if (this.collectSemaphore === 0) {
+  //     this.collectSemaphore = 1
+  //     if (!mute) {
+  //       collectSound.play()
+  //     }
+  //
+  //     if (this.mode.collect) {
+  //       this.mode.collect(player, power, this)
+  //     }
+  //
+  //     this.game.add.tween(power).to({ alpha: 0 }, 300, Phaser.Easing.Linear.None, true)
+  //     const powerTween = this.game.add.tween(power.scale).to({x: 0, y: 0}, 300, Phaser.Easing.Back.In, true)
+  //     powerTween.onComplete.add(function () { power.destroy(); this.collectSemaphore = 0 }, this)
+  //   }
+  // }
 
   showKey () {
     // Show player's key
+    const { w2, h2, scale, mobile } = config
     if (!this.showOneKey) return
 
     const keyX = Math.round(Math.cos(this.sprite.rotation + Math.PI / 2 * this.direction) * 88 * scale) + this.sprite.x
@@ -395,7 +387,7 @@ class Player {
     }
 
     if (mobile) {
-      if (this.orientation === 'portrait') {
+      if (config.orientation === 'portrait') {
         this.touch = this.game.add.sprite(w2, h2 * 1.5 + 100, 'touch')
       } else {
         this.touch = this.game.add.sprite(w2 * 0.5, h2 + 100, 'touch')
@@ -436,7 +428,7 @@ class Player {
 
   setAngularVelocity ({ scaled = false } = {}) {
     const vel = this.direction * this.angularVelocity * this.speed
-    this.sprite.body.angularVelocity = scaled ? vel * scale : vel
+    this.sprite.body.angularVelocity = scaled ? vel * config.scale : vel
   }
 
   render () {

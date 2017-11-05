@@ -1,16 +1,21 @@
-var preloadMenu = function (game) {}
+const config = require('../config')
 
-preloadMenu.prototype = {
-  preload: function () {
-    var wOrientation = Math.abs(window.orientation) - 90 == 0 ? 'landscape' : 'portrait'
+const { Phaser } = window
 
-	    var loadingBar = this.add.sprite(w2, h2, 'loading')
-	    this.game.physics.enable(loadingBar, Phaser.Physics.ARCADE)
-	    loadingBar.anchor.setTo(0.5, 0.5)
-	    loadingBar.body.angularVelocity = 200
+class PreloadMenu {
+  constructor (game) {
+    this.game = game
+  }
+
+  preload () {
+    const { w2, h2 } = config
+    const loadingBar = this.add.sprite(w2, h2, 'loading')
+    this.game.physics.enable(loadingBar, Phaser.Physics.ARCADE)
+    loadingBar.anchor.setTo(0.5, 0.5)
+    loadingBar.body.angularVelocity = 200
     this.game.physics.arcade.velocityFromAngle(loadingBar.angle, 300 * this.speed, loadingBar.body.velocity)
-    	// Load all stuf from menu
-  	this.game.load.image('login_button', 'assets/sprites/menu/login.png')
+    // Load all stuf from menu
+    this.game.load.image('login_button', 'assets/sprites/menu/login.png')
     this.game.load.image('audio_button', 'assets/sprites/menu/audio.png')
     this.game.load.image('audiooff_button', 'assets/sprites/menu/audiooff.png')
     this.game.load.image('multiplayer_button', 'assets/sprites/menu/multiplayer.png')
@@ -41,18 +46,17 @@ preloadMenu.prototype = {
     this.game.load.image('aux-stat', 'assets/sprites/menu/aux-stat.png')
     this.game.load.image('survScore-stat', 'assets/sprites/menu/endless-stat.png')
     this.game.load.audio('dream', 'assets/music/dream.ogg')
-  },
-
-  	create: function () {
- 		if (!mobile) {
-   this.game.time.events.add(Phaser.Timer.SECOND * 1, function () {
-     this.game.state.start('Menu')
-   }, this)
- } else {
-   this.game.state.start('Menu')
- }
   }
 
+  create () {
+    if (!config.mobile) {
+      this.game.time.events.add(Phaser.Timer.SECOND * 1, function () {
+        this.game.state.start('Menu')
+      }, this)
+    } else {
+      this.game.state.start('Menu')
+    }
+  }
 }
 
-module.exports = preloadMenu
+module.exports = PreloadMenu

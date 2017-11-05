@@ -10,23 +10,12 @@ const Multiplayer = require('./states/multiplayer')
 const SetKeys = require('./states/set-keys')
 const PreloadGame = require('./states/preload-game')
 const GameMananger = require('./states/game-manager')
+const config = require('./config')
 
 require('./network')
 
-// TODO clear this
-window.baseW = 1366
-window.baseH = 768
-window.baseRatio = 1366 / 768
-window.baseArea = 1024 * 1024
-window.mobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
-
-const winW = window.innerWidth
-const winH = window.innerHeight
-const winRatio = winW / winH
-// mobile = true;
-
-const height = Math.round(Math.sqrt(window.baseArea / winRatio))
-const width = Math.round(winRatio * height)
+const height = Math.round(Math.sqrt(config.baseArea / config.winRatio))
+const width = Math.round(config.winRatio * height)
 
 const game = new window.Phaser.Game(width, height, window.Phaser.CANVAS, '')
 

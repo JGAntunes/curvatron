@@ -1,17 +1,21 @@
-var preloadGame = function (game) {
-  this.mode = null
-}
+const config = require('../config')
 
-preloadGame.prototype = {
-  init: function (mode) {
+const { Phaser } = window
+
+class PreloadGame {
+  constructor (game) {
+    this.game = game
+    this.mode = null
+  }
+
+  init (mode) {
     this.mode = mode
-  },
+  }
 
-  preload: function () {
+  preload () {
     this.scale.forceOrientation(true)
-    var wOrientation = Math.abs(window.orientation) - 90 == 0 ? 'landscape' : 'portrait'
-
-    var loadingBar = this.add.sprite(w2, h2, 'loading')
+    const { w2, h2 } = config
+    const loadingBar = this.add.sprite(w2, h2, 'loading')
     this.game.physics.enable(loadingBar, Phaser.Physics.ARCADE)
     loadingBar.anchor.setTo(0.5, 0.5)
     loadingBar.body.angularVelocity = 200
@@ -34,12 +38,11 @@ preloadGame.prototype = {
     this.game.load.audio('kill', 'assets/sfx/kill.ogg')
     this.game.load.audio('sfx_collect0', 'assets/sfx/collect0.ogg')
     this.mode.preload()
-  },
-
-  	create: function () {
-    this.game.state.start('GameMananger', true, false, this.mode)
   }
 
+  create () {
+    this.game.state.start('GameMananger', true, false, this.mode)
+  }
 }
 
-module.exports = preloadGame
+module.exports = PreloadGame
