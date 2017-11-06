@@ -332,7 +332,6 @@ class Player {
     }
 
     if (other && !this.mode.sp) {
-      debugger
       const thisPlayer = Player.findById(player.name)
       const otherPlayer = Player.findById(other.name)
       if (thisPlayer.score >= otherPlayer.score) {
